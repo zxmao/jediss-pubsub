@@ -1,0 +1,40 @@
+package mq;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+
+/**
+ * @author JunXiong
+ * @Date 16.11.14
+ */
+public class SubThread {
+
+    private Logger logger = LoggerFactory.getLogger(SubThread.class);
+
+    private final JedisPool jedisPool;
+
+    private final JedisListen jedisListen = new JedisListen();
+
+    public SubThread(JedisPool jedisPool) {
+        this.jedisPool = jedisPool;
+    }
+
+    public void run(String channel) {
+        new Thread(() -> {
+            Jedis jedis = null;
+            try {
+                jedis = jedisPool.getResource();
+                jedis.subscribe(jedisListen, channel);
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
+            }
+        }).start();
+    }
+}
+
