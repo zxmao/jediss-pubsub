@@ -1,0 +1,20 @@
+package mq;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+
+/**
+ * @author JunXiong
+ * @Date 16.11.14
+ */
+public class PubThread {
+
+    private Logger logger = LoggerFactory.getLogger(PubThread.class);
+
+    public void run(String channel,String message,JedisPool jedisPool) {
+        Jedis jedis = jedisPool.getResource();
+        jedis.publish(channel, message);
+    }
+}
