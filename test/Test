@@ -1,0 +1,25 @@
+package test;
+
+import redis.clients.jedis.JedisPool;
+
+/**
+ * @author JunXiong
+ * @Date 16.11.14
+ */
+public class Test {
+
+    public static void main(String[] args) {
+        JedisPoolConfig config = new JedisPoolConfig();
+        JedisPool pool = config.getJedisPool("127.0.0.1", 6379);
+
+        String subKey = "local";
+
+        SubThread sub = new SubThread(pool);
+        sub.run(subKey);
+
+        //PubThread pub = new PubThread();
+        //pub.run(subKey,"123456789",pool);
+
+
+    }
+}
